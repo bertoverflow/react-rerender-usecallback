@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+# Child-Rerendering, useCallback, memo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The docs for `useCallback` (https://reactjs.org/docs/hooks-reference.html#usecallback) state:
+> This is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders (e.g. > shouldComponentUpdate).
 
-## Available Scripts
+The important statement here is OPTIMIZED child components.
 
-In the project directory, you can run:
+By default, if you have a parent component that rerenders, all of its child-components always also rerender!
 
-### `npm start`
+It does not matter if they have:
+- no props at all
+- props that do not change
+- function-props that are wrapped with `useCallback` (and thus do not change)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+If you know your child component does not need to rerender when its props have not changed, then you can use `React.PureComponent` (classes) or `React.memo` (functional components)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Both "enable" shallow comparison of the props and if they have not changed, react will skip the rerendering of this component.
 
-### `npm test`
+Beware: If you have a prop that is a function (e.g. onClick-Handler) you need to make sure that this function reference does not change between rerenders.
+Especially with functional components this is often the case, because the functions are often declared inside the component and thus get recreated upon each rerender. This is exactly where `useCallback` is useful.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Usecase for `useCallback` (https://dmitripavlutin.com/dont-overuse-react-usecallback/)
 
-### `npm run build`
+> But in some cases you need to maintain a single function instance between renderings:
+> - A functional component wrapped inside React.memo() accepts a function object prop
+> - When the function object is a dependency to other hooks, e.g. useEffect(..., [callback])
+> - When the function has some internal state, e.g. when the function is debounced or throttled.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Examples
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+See: https://github.com/bertoverflow/react-rerender-usecallback
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+You can start the app and
+- have a look at the console-statements
+- use the react profiler to explicitly check which components rerender and why
 
-### `npm run eject`
+## See also
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- https://mokkapps.de/blog/debug-why-react-re-renders-a-component/
+- https://albertyuebaixu.medium.com/some-misunderstandings-with-react-memo-usememo-and-usecallback-27449b670d60
+- https://dmitripavlutin.com/dont-overuse-react-usecallback/
+- https://reactjs.org/docs/react-api.html#reactmemo
+- https://reactjs.org/docs/react-api.html#reactpurecomponent
