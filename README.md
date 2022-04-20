@@ -36,6 +36,7 @@ You can start the app and
 
 ## See also
 
+- https://kentcdodds.com/blog/usememo-and-usecallback (**extremely helpful read !**)
 - https://mokkapps.de/blog/debug-why-react-re-renders-a-component/
 - https://albertyuebaixu.medium.com/some-misunderstandings-with-react-memo-usememo-and-usecallback-27449b670d60
 - https://dmitripavlutin.com/dont-overuse-react-usecallback/
