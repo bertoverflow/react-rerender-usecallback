@@ -42,3 +42,4 @@ You can start the app and
 - https://dmitripavlutin.com/dont-overuse-react-usecallback/
 - https://reactjs.org/docs/react-api.html#reactmemo
 - https://reactjs.org/docs/react-api.html#reactpurecomponent
+
